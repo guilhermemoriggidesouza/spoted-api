@@ -26,7 +26,7 @@ export default class UserService {
         if (userFinded) {
             throw Error("Já existe um user com esse login")
         }
-        const result = await collections.user?.insertOne(user)
-        return { id: result?.insertedId!.toString()! }
+        await collections.user?.insertOne(user)
+        return { id: user?.id! }
     }
 }
