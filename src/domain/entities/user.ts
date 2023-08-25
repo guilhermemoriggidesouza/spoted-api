@@ -14,6 +14,7 @@ export class User {
         public _id: any,
         public id?: string,
         public password?: string,
+        public files?: Array<string>
     ) {
         if (!this.id) {
             this.id = v4()

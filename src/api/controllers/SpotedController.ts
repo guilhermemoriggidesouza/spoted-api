@@ -34,9 +34,9 @@ export class SpotedController {
     private async get(req: RequestAuth, res: Response) {
         const { radius, fromUser, lat, log }: GetReqSpotedDTO = req.query as unknown as GetReqSpotedDTO
         const spoteds: Array<Spoted> = await this.spotedService.find({
-            radius: radius,
+            radius: radius || 10000,
             user: Boolean(fromUser) ? req.user.id : undefined,
-            coordinates: [lat, log]
+            coordinates: [Number(lat), Number(log)]
         })
         res.send(spoteds)
     }

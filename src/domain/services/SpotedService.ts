@@ -14,14 +14,21 @@ export default class SpotedService {
     }
 
     public async find({ radius, user, coordinates }: { radius: number, user?: string, coordinates: Array<number> }): Promise<Array<Spoted>> {
-        var query = {
-            userId: user,
-            "loc": !user ? {
-                $geoWithin: {
-                    $centerSphere: [coordinates, this.milesToRadian(radius)]
+        var query: any = {
+            "loc": !user && {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates
+                    },
+                    $maxDistance: radius
                 }
-            } : undefined
+            }
         };
+        if (user) {
+            query.userId = user
+        }
+        console.log(await collections.spoted?.indexes())
         const spoteds = (await collections.spoted?.find(query).toArray()) as Array<Spoted>
         return spoteds
     }

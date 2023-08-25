@@ -10,6 +10,6 @@ export async function connectToDatabase() {
     const SpotedCollection: mongoDB.Collection = db.collection("spoted");
     collections.user = UserCollection;
     collections.spoted = SpotedCollection;
-    collections.spoted?.createIndex({ location: "2dsphere" })
+    collections.spoted?.createIndex({ loc: "2dsphere" }, { sparse: false })
     console.log(`Successfully connected to database: ${db.databaseName}`);
 }
