@@ -22,6 +22,7 @@ export class CommentController {
                 req.user.id!,
                 comment.spotedId,
                 comment.comment,
+                comment.commentFather
             ),
         )
         res.send(commentCreated)
