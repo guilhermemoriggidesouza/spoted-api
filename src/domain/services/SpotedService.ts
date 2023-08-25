@@ -28,7 +28,6 @@ export default class SpotedService {
         if (user) {
             query.userId = user
         }
-        console.log(await collections.spoted?.indexes())
         const spoteds = (await collections.spoted?.find(query).toArray()) as Array<Spoted>
         return spoteds
     }
