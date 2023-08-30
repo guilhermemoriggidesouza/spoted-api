@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../entities/user';
-import config from '../../api/config';
+import config from '../../config';
 import { collections } from '../../mongodb';
 
 export default class AuthService {

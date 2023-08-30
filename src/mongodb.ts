@@ -1,5 +1,5 @@
 import * as mongoDB from "mongodb";
-import config from "./api/config";
+import config from "./config";
 
 export const collections: { user?: mongoDB.Collection, spoted?: mongoDB.Collection, comment?: mongoDB.Collection } = {}
 export async function connectToDatabase() {
