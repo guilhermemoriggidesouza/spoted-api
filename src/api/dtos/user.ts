@@ -3,16 +3,17 @@ export interface CreateReqUserDTO {
     login: string,
     email: string,
     password: string,
-    bio: string,
-    facul: string,
-    ocupation: string,
-    facebook: string,
-    instagram: string,
-    twitter: string
+    bio?: string,
+    age?: string,
+    facul?: string,
+    ocupation?: string,
+    facebook?: string,
+    instagram?: string,
+    twitter?: string
 }
 
 export interface CreateResUserDTO {
-    id: string
+    _id: string
 }
 
 export interface GetResUserDTO {
@@ -21,10 +22,10 @@ export interface GetResUserDTO {
     email: string,
     login: string,
     password: string,
-    bio: string,
-    facul: string,
-    ocupation: string,
-    facebook: string,
-    instagram: string,
-    twitter: string
+    bio?: string,
+    facul?: string,
+    ocupation?: string,
+    facebook?: string,
+    instagram?: string,
+    twitter?: string
 }

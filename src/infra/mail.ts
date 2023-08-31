@@ -14,23 +14,23 @@ class Mail {
         });
     }
 
-    sendMail(to: string, subject: string, message: string, { onFinish = () => { } }: { onFinish: Function }) {
-        const mailOptions = {
-            from: config.mail.email,
-            to,
-            subject,
-            html: message,
-        };
+    sendMail(to: string, subject: string, message: string) {
+        return new Promise((res, rej) => {
+            const mailOptions = {
+                from: config.mail.email,
+                to,
+                subject,
+                html: message,
+            };
 
-        this.transporter.sendMail(mailOptions, function (error: any, info: any) {
-            if (error) {
-                console.log(error);
-                return error;
-            } else {
-                onFinish()
-                return 'E-mail enviado com sucesso!';
-            }
-        });
+            this.transporter.sendMail(mailOptions, function (error: any, info: any) {
+                if (error) {
+                    rej("Erro ao enviar Email")
+                } else {
+                    res('E-mail enviado com sucesso!')
+                }
+            });
+        })
     }
 }
 

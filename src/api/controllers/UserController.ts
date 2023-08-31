@@ -14,10 +14,10 @@ import { asyncWrapper } from '../middleware/asyncWrapper';
 export class UserController {
     userService: UserService = new UserService()
 
-    @Get(':id')
+    @Get('')
     @Middleware(authMiddleware)
     private async get(req: RequestAuth, res: Response) {
-        const id = req.params.id
+        const id = req.query.id?.toString() || req.user._id!
         const user: GetResUserDTO = (await this.userService.getUser(id)) as GetResUserDTO
         res.send(user)
     }
@@ -26,7 +26,26 @@ export class UserController {
     @ErrorMiddleware(errorMiddleware)
     private async create(req: Request, res: Response) {
         const user: CreateReqUserDTO = req.body
-        const userCreated = await this.userService.createUser(user as User)
+        console.log(user)
+        const userCreated = await this.userService.createUser(
+            new User(
+                user.name,
+                user.login,
+                user.email,
+                undefined,
+                user.bio,
+                user.age,
+                user.facul,
+                user.ocupation,
+                user.facebook,
+                user.instagram,
+                user.twitter,
+                undefined,
+                user.password,
+                undefined,
+            ),
+        )
+
         res.send(userCreated)
     }
 

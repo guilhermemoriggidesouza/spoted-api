@@ -3,8 +3,22 @@ import jwt from 'jsonwebtoken';
 import { User } from '../entities/user';
 import config from '../../config';
 import { collections } from '../../mongodb';
+import mail, { MESSAGES } from '../../infra/mail';
+import UserService from './UserService';
 
 export default class AuthService {
+    userService: UserService = new UserService();
+
+    public async genRecoverCode(email: string) {
+        const user = await collections.user?.findOne({ email }) as User;
+        if (!user) {
+            throw Error("Não foi encontrado um usuário com esse email");
+        }
+        const code = Math.floor(100000 + Math.random() * 900000)
+        await collections.user?.updateOne(user._id, { recoverCode: code })
+        await mail.sendMail(email, MESSAGES.CODE_GEN.subject, MESSAGES.CODE_GEN.body({ name: user.name, code: code.toString() }))
+        return true;
+    }
 
     public async comparePasswords(
         password: string,
@@ -14,9 +28,7 @@ export default class AuthService {
     }
 
     public generateToken(payload: object): string {
-        return jwt.sign(payload, config.auth.key, {
-            expiresIn: config.auth.tokenExpiresIn,
-        });
+        return jwt.sign(payload, config.auth.key, {});
     }
 
     public static decodeToken(token: string): User {
@@ -25,6 +37,10 @@ export default class AuthService {
 
     public async login(login: string, pass: string): Promise<string> {
         const user = await collections.user?.findOne({ login }) as User
+        if (!user) {
+            throw Error("Não foi encontrado um usuário com esse login");
+        }
+
         const isUser = await this.comparePasswords(pass, user.password!)
         if (isUser) {
             const token: string = jwt.sign(user, config.auth.key);
@@ -32,6 +48,15 @@ export default class AuthService {
         } else {
             throw Error("senha inválida")
         }
+    }
+
+    public async changePassword(email: string, password: string, code: string) {
+        const user = await collections.user?.findOne({ email, code: parseInt(code) }) as User;
+        if (!user) {
+            throw Error("Não foi encontrado um usuário com esse email e código");
+        }
+        await collections.user?.updateOne(user._id, { recoverCode: null, password: await this.userService.hashPassword(password) })
+        return true
     }
 
 }

@@ -2,10 +2,11 @@ import bcrypt from 'bcrypt';
 import { User } from '../entities/user';
 import { collections } from '../../mongodb';
 import { CreateResUserDTO } from '../../api/dtos/user';
+import { ObjectId } from 'mongodb';
 
 export default class UserService {
     public async getUser(id: string): Promise<User> {
-        const user: User = (await collections.user?.findOne({ id })) as User
+        const user: User = (await collections.user?.findOne({ _id: new ObjectId(id) })) as User
         if (!user) {
             throw new Error("Não foi possível achar esse user")
         }
@@ -26,7 +27,7 @@ export default class UserService {
         if (userFinded) {
             throw Error("Já existe um user com esse login")
         }
-        await collections.user?.insertOne(user)
-        return { id: user?.id! }
+        const result = await collections.user?.insertOne(user)
+        return { _id: result?.insertedId.toString()! }
     }
 }

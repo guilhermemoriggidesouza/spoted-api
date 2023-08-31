@@ -22,6 +22,7 @@ export class SpotedController {
                 spoted.title,
                 spoted.description,
                 spoted.userId,
+                new Date(),
                 {
                     type: "Point", coordinates: [spoted.lat, spoted.log],
                 },

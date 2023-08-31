@@ -5,6 +5,7 @@ export class Spoted {
         public title: string,
         public description: string,
         public userId: string,
+        public createdAt: Date,
         public loc: {
             type: string,
             coordinates: Array<number>
