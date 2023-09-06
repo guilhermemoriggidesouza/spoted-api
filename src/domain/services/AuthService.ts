@@ -5,17 +5,24 @@ import config from '../../config';
 import { collections } from '../../mongodb';
 import mail, { MESSAGES } from '../../infra/mail';
 import UserService from './UserService';
+import { ObjectId } from 'mongodb';
 
 export default class AuthService {
     userService: UserService = new UserService();
 
     public async genRecoverCode(email: string) {
+        if(!email){
+            throw Error("Email não foi informado");
+        }
         const user = await collections.user?.findOne({ email }) as User;
         if (!user) {
             throw Error("Não foi encontrado um usuário com esse email");
         }
         const code = Math.floor(100000 + Math.random() * 900000)
-        await collections.user?.updateOne(user._id, { recoverCode: code })
+        await collections.user?.updateOne(
+            { _id: new ObjectId(user._id) },
+            { "$set": { recoverCode: code } }
+        )
         await mail.sendMail(email, MESSAGES.CODE_GEN.subject, MESSAGES.CODE_GEN.body({ name: user.name, code: code.toString() }))
         return true;
     }
@@ -51,11 +58,15 @@ export default class AuthService {
     }
 
     public async changePassword(email: string, password: string, code: string) {
-        const user = await collections.user?.findOne({ email, code: parseInt(code) }) as User;
+        const user = await collections.user?.findOne({ email, recoverCode: parseInt(code) }) as User;
         if (!user) {
             throw Error("Não foi encontrado um usuário com esse email e código");
         }
-        await collections.user?.updateOne(user._id, { recoverCode: null, password: await this.userService.hashPassword(password) })
+        await collections.user?.updateOne(
+            { _id: new ObjectId(user._id) },
+            { "$set": { recoverCode: null, password: await this.userService.hashPassword(password) } },
+            { upsert: true }
+        );
         return true
     }
 

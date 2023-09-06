@@ -25,9 +25,9 @@ class Mail {
 
             this.transporter.sendMail(mailOptions, function (error: any, info: any) {
                 if (error) {
-                    rej("Erro ao enviar Email")
+                    rej(error)
                 } else {
-                    res('E-mail enviado com sucesso!')
+                    res(info)
                 }
             });
         })

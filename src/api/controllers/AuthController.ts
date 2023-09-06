@@ -35,11 +35,10 @@ export class AuthController {
     }
 
     @Put('password')
-    @Middleware(authMiddleware)
     private async changePass(req: RequestAuth, res: Response) {
-        const code = req.query.code
-        const pass = req.query.password
-        const email = req.query.email
+        const code = req.body.code
+        const pass = req.body.password
+        const email = req.body.email
         const changePassword = await this.authService.changePassword(email?.toString()!, pass?.toString()!, code?.toString()!);
         res.send({ changePassword })
     }

@@ -23,9 +23,13 @@ export default class UserService {
 
     async createUser(user: User): Promise<CreateResUserDTO> {
         user.password = await this.hashPassword(user.password!)
-        const userFinded: User = (await collections.user?.findOne({ login: user.login })) as User
-        if (userFinded) {
+        const userFindedLogin: User = (await collections.user?.findOne({ login: user.login })) as User
+        const userFindedEmail: User = (await collections.user?.findOne({ email: user.email })) as User
+        if (userFindedLogin) {
             throw Error("Já existe um user com esse login")
+        }
+        if (userFindedEmail) {
+            throw Error("Já existe um user com esse email")
         }
         const result = await collections.user?.insertOne(user)
         return { _id: result?.insertedId.toString()! }
