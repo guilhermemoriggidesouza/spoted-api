@@ -17,17 +17,7 @@ export class SpotedController {
     @Post('/')
     private async create(req: RequestAuth, res: Response) {
         const spoted: CreateReqSpotedDTO = req.body
-        const spotedCreated = await this.spotedService.createSpoted(
-            new Spoted(
-                spoted.title,
-                spoted.description,
-                spoted.userId,
-                new Date(),
-                {
-                    type: "Point", coordinates: [spoted.lat, spoted.log],
-                },
-            ),
-        )
+        const spotedCreated = await this.spotedService.createSpoted(spoted)
         res.send(spotedCreated)
     }
 

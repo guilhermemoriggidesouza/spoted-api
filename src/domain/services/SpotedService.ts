@@ -1,9 +1,18 @@
-import { CreateResSpotedDTO } from '../../api/dtos/spoted';
+import { CreateResSpotedDTO, CreateReqSpotedDTO } from '../../api/dtos/spoted';
 import { collections } from '../../mongodb';
 import { Spoted } from '../entities/spoted';
 
 export default class SpotedService {
-    public async createSpoted(spoted: Spoted): Promise<CreateResSpotedDTO> {
+    public async createSpoted(spotedDTO: CreateReqSpotedDTO): Promise<CreateResSpotedDTO> {
+        const spoted: Spoted = new Spoted(
+            spotedDTO.title,
+            spotedDTO.description,
+            spotedDTO.userId,
+            new Date(),
+            {
+                type: "Point", coordinates: [spotedDTO.lat, spotedDTO.log],
+            },
+        );
         await collections.spoted?.insertOne(spoted)
         return { id: spoted.id! }
     }

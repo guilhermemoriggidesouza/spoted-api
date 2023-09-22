@@ -12,6 +12,20 @@ export interface CreateReqUserDTO {
     twitter?: string
 }
 
+export interface EditReqUserDTO {
+    name: string,
+    login: string,
+    email: string,
+    password: string,
+    bio?: string,
+    age?: string,
+    facul?: string,
+    ocupation?: string,
+    facebook?: string,
+    instagram?: string,
+    twitter?: string
+}
+
 export interface CreateResUserDTO {
     _id: string
 }

@@ -17,14 +17,7 @@ export class CommentController {
     @Post('/')
     private async create(req: RequestAuth, res: Response) {
         const comment: CreateReqCommentDTO = req.body
-        const commentCreated = await this.commentService.createComment(
-            new Comment(
-                req.user.id!,
-                comment.spotedId,
-                comment.comment,
-                comment.commentFather
-            ),
-        )
+        const commentCreated = await this.commentService.createComment(comment, req.user.id!)
         res.send(commentCreated)
     }
 
